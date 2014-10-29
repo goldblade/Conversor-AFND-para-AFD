@@ -37,18 +37,58 @@ def Opcoes():
 		print u'Opção Inválida'
 
 estados = []
+inicial = False
 
 def NovoEstado():
 	cls()
 	print "-------------- NOVO ESTADO --------------"
-	#while True:
+
 	try:
 		nome = raw_input('Entre com o Nome do Estado: ')
 		estado = Estado(nome)		
 		pass
 	except Exception, e:
 		print u'Ocorreu um problema, tente novamente'
+
+	global inicial
+
+	if not inicial:
+
+		while True:
+
+			try:
+				repeat = raw_input('Deseja que este estado seja o estado Inicial? Escolha S para sim, N para não: ')
+			except Exception, e:
+				print u'Ocorreu um problema, tente novamente'
+
+			if (repeat == 'S') or (repeat == 's'):
+				estado.inicial(True)
+				inicial = True
+				break
+			elif (repeat == 'N') or (repeat == 'n'):				
+				break				
+			else:
+				print u'Escolha inválida, tente novamente...'
+				time.sleep(1)
+
+	while True:
+
+		try:
+			repeat = raw_input('Deseja que este estado seja o estado Final? Escolha S para sim, N para não: ')
+		except Exception, e:
+			print u'Ocorreu um problema, tente novamente'
+
+		if (repeat == 'S') or (repeat == 's'):
+			estado.final(True)			
+			break
+		elif (repeat == 'N') or (repeat == 'n'):				
+			break				
+		else:
+			print u'Escolha inválida, tente novamente...'
+			time.sleep(1)								
+
 	estados.append(estado)
+
 	cls()
 	print 'Estado ' + nome + ' Inserido com sucesso!'
 	try:
