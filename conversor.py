@@ -2,6 +2,9 @@
 #! /bin/env python
 import os
 import time
+from colorama import Fore, Back, Style, init
+
+init(autoreset=True)
 
 def cls():
     os.system(['clear','cls'][os.name == 'nt'])
@@ -26,8 +29,11 @@ class Estado:
 def Opcoes():
 	print '-------------- MENU --------------'	
 	print '1 - Inserir Estados'
-	print '2 - Exibir Estados'
-	print '5 - Sair'
+	print '2 - Inserir Transições'
+	print '3 - Apagar'
+	print '4 - Exibir Automato'
+	print '5 - Converter para AFD'
+	print '6 - Sair'
 	print ''
 	try:
 		opcao = int(raw_input('Escolha uma opção: '))		
@@ -106,6 +112,13 @@ def NovoEstado():
 		time.sleep(1)
 		cls()
 
+def DesenhaEstado(nome):
+	print(' ')	
+	print(Fore.BLACK + Back.YELLOW + '    ')
+	print(Fore.BLACK + Back.YELLOW + ' ' + nome + ' ')
+	print(Fore.BLACK + Back.YELLOW + '    ')
+	print(' ')	
+
 #nome = raw_input('Entre com o Nome: ')
 #idade = int(raw_input('Entre com a idade: '))
 while True:
@@ -114,8 +127,26 @@ while True:
 		NovoEstado()
 		pass
 	elif opcao == 2:
-		print estados
+		''' Transicoes '''
+		print 'transicoes'
+	elif opcao == 3:
+		print ''' Apagar algo '''		
+	elif opcao == 4:
+		'''Exibir automato'''
+		# print(Fore.RED + 'some red text')
+		# print(Back.GREEN + 'and with a green background')
+		# print(Style.DIM + 'and in dim text')
+		# print(Fore.RESET + Back.RESET + Style.RESET_ALL)
+		# print('back to normal now')		
+		#print(Fore.RESET + Back.RESET + Style.RESET_ALL)		
+		#print(Fore.BLACK + Back.YELLOW + 'Testando com o fundo amarelo')
+		#print(Fore.RESET + Back.RESET + Style.RESET_ALL)
+		for e in estados:
+			DesenhaEstado(e.nome)		
 	elif opcao == 5:
+		''' Converter para AFD '''
+		print 'convertendo....'
+	elif opcao == 6:
 		print 'Saindo do programa....'
 		break
 	else:		
