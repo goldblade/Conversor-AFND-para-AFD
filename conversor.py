@@ -2,9 +2,9 @@
 #! /bin/env python
 import os
 import time
-from colorama import Fore, Back, Style, init
+#from colorama import Fore, Back, Style, init
 
-init(autoreset=True)
+#init(autoreset=True)
 
 def cls():
     os.system(['clear','cls'][os.name == 'nt'])
@@ -13,15 +13,17 @@ class Estado:
 
 	def __init__(self, nome):		
 		self.nome = nome
+		self.alfa_zero = []
+		self.alfa_um = []
 	
-	def alfa_zero(self, Estado):
-		self.proximo_estado = Estado
+	def alfa_zero(self, Estado):		
+		self.alfa_zero.append(Estado)
 
 	def alfa_um(self, Estado):
-		self.proximo_estado = Estado
+		self.alfa_um.append(Estado)
 
 	def inicial(self, status):
-		self.inicial = status
+		self.inicial = status		
 
 	def final(self, status):
 		self.final = status
@@ -112,15 +114,55 @@ def NovoEstado():
 		time.sleep(1)
 		cls()
 
-def DesenhaEstado(nome):
-	print(' ')	
-	print(Fore.BLACK + Back.YELLOW + '    ')
-	print(Fore.BLACK + Back.YELLOW + ' ' + nome + ' ')
-	print(Fore.BLACK + Back.YELLOW + '    ')
-	print(' ')	
+def DesenhaEstado(nome):	
+	#print "%3s"  % (nome) + "%3s" % ('|')
+	print "%s|%s" % (str(nome).rjust(6), nome)
+	#print '{0} | {1}'.format(nome, nome)
+	#print "%3d\n%3d" % (50, 150)
+
+def EscolheEstado():
+	cls()
+	print "-------------- Escolha o Estado --------------"
+	i = 0
+	for e in estados:
+		print 'Estado ' + e.nome
+	print ''		
+	raw_input('Digite o nome do estado que deseja inserir ....')
+
+def InserirTransicao():
+	#EscolheEstado()
+	#seleciona estado
+	cls()
+	print "-------------- Escolha o Estado --------------"
+	i = 0
+	for e in estados:
+		print str(i) + ' - ' + e.nome
+	print ''
+	x = 0
+	while True:
+		if x == 3:
+			print u'Limite de tentativas inválidas excedida, retornando ao menu inicial...'
+			time.sleep(1)
+			cls()
+			Opcoes()
+		try:
+			escolha = int(raw_input('Digite o número do estado que deseja inserir transições: '))	
+		except Exception, e:
+			print 'Ouve um erro na escolha'
+			InserirTransicao()		
+		try:
+			if estados[escolha]:
+				print 'Estado Existe ' + str(estados[escolha])			
+				break
+		except Exception, e:
+			print u'Escolha inválida, tente novamente...'
+			time.sleep(1)			
+		x = x + 1				
+	#escolhe estado de destino para o alfabeto	
 
 #nome = raw_input('Entre com o Nome: ')
 #idade = int(raw_input('Entre com a idade: '))
+cls()
 while True:
 	opcao = Opcoes()
 	if opcao == 1:
@@ -128,11 +170,13 @@ while True:
 		pass
 	elif opcao == 2:
 		''' Transicoes '''
-		print 'transicoes'
+		cls()
+		InserirTransicao()
 	elif opcao == 3:
 		print ''' Apagar algo '''		
 	elif opcao == 4:
 		'''Exibir automato'''
+		cls()
 		# print(Fore.RED + 'some red text')
 		# print(Back.GREEN + 'and with a green background')
 		# print(Style.DIM + 'and in dim text')
@@ -141,8 +185,14 @@ while True:
 		#print(Fore.RESET + Back.RESET + Style.RESET_ALL)		
 		#print(Fore.BLACK + Back.YELLOW + 'Testando com o fundo amarelo')
 		#print(Fore.RESET + Back.RESET + Style.RESET_ALL)
+		print '         AFND          '
+		print ''
+		print '      |   0   |   1   |'
+		print '-----------------------'
 		for e in estados:
-			DesenhaEstado(e.nome)		
+			DesenhaEstado(e.nome)
+		raw_input('Pressione enter para continuar....')
+		cls()
 	elif opcao == 5:
 		''' Converter para AFD '''
 		print 'convertendo....'
