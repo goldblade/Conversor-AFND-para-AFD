@@ -120,48 +120,46 @@ def DesenhaEstado(nome):
 	#print '{0} | {1}'.format(nome, nome)
 	#print "%3d\n%3d" % (50, 150)
 
-def EscolheEstado():
-	cls()
-	print "-------------- Escolha o Estado --------------"
-	i = 0
-	for e in estados:
-		print 'Estado ' + e.nome
-	print ''		
-	raw_input('Digite o nome do estado que deseja inserir ....')
-
 def InserirTransicao():
-	#EscolheEstado()
 	#seleciona estado
 	cls()
 	print "-------------- Escolha o Estado --------------"
+	
 	i = 0
 	for e in estados:
 		print str(i) + ' - ' + e.nome
+		i = i + 1
 	print ''
+	
 	x = 0
+	estado = None
 	while True:
-		if x == 3:
-			print u'Limite de tentativas inválidas excedida, retornando ao menu inicial...'
-			time.sleep(1)
-			cls()
-			Opcoes()
+		
 		try:
 			escolha = int(raw_input('Digite o número do estado que deseja inserir transições: '))	
 		except Exception, e:
-			print 'Ouve um erro na escolha'
+			print 'Ouve um erro na escolha, tente novamente'
+			time.sleep(1)
 			InserirTransicao()		
 		try:
-			if estados[escolha]:
-				print 'Estado Existe ' + str(estados[escolha])			
-				break
+			estado = estados[escolha]				
 		except Exception, e:
 			print u'Escolha inválida, tente novamente...'
-			time.sleep(1)			
-		x = x + 1				
-	#escolhe estado de destino para o alfabeto	
-
-#nome = raw_input('Entre com o Nome: ')
-#idade = int(raw_input('Entre com a idade: '))
+			x = x + 1
+			if x == 3:
+				print u'Limite de tentativas inválidas excedida, retornando ao menu inicial...'
+				time.sleep(1)
+				cls()				
+				break
+			time.sleep(1)
+		if estado is not None:
+			break
+    #se tem estado pedir para escolher o estado de destino de acordo com o alfabeto
+	if estado is not None:
+		#escolhe estado de destino para o alfabeto
+		print 'Estado foi escolhido: ' + estado.nome
+		raw_input('Pressione enter para continuar....')
+	
 cls()
 while True:
 	opcao = Opcoes()
