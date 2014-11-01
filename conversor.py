@@ -158,6 +158,9 @@ def InserirTransicao():
 	if estado is not None:
 		#escolhe estado de destino para o alfabeto
 		print 'Estado foi escolhido: ' + estado.nome
+		for x in range(0,2):
+			print "Para o caracter %d escolha o estado de destino da transição" % (x)
+		
 		raw_input('Pressione enter para continuar....')
 	
 cls()
