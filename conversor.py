@@ -13,14 +13,14 @@ class Estado:
 
 	def __init__(self, nome):		
 		self.nome = nome
-		self.alfa_zero = []
-		self.alfa_um = []
+		self.zero = []
+		self.um = []
 	
 	def alfa_zero(self, Estado):		
-		self.alfa_zero.append(Estado)
+		self.zero.append(Estado)
 
 	def alfa_um(self, Estado):
-		self.alfa_um.append(Estado)
+		self.um.append(Estado)
 
 	def inicial(self, status):
 		self.inicial = status		
@@ -119,9 +119,8 @@ def DesenhaEstado(nome):
 	print "%s|%s" % (str(nome).rjust(6), nome)
 	#print '{0} | {1}'.format(nome, nome)
 	#print "%3d\n%3d" % (50, 150)
-
-def InserirTransicao():
-	#seleciona estado
+	
+def EscolheEstado(origem, caracter):
 	cls()
 	print "-------------- Escolha o Estado --------------"
 	
@@ -133,14 +132,30 @@ def InserirTransicao():
 	
 	x = 0
 	estado = None
-	while True:
+	while True:		
 		
-		try:
-			escolha = int(raw_input('Digite o número do estado que deseja inserir transições: '))	
-		except Exception, e:
-			print 'Ouve um erro na escolha, tente novamente'
-			time.sleep(1)
-			InserirTransicao()		
+		if origem == 'inserirTransicao':
+			try:
+				escolha = int(raw_input('Digite o número do estado que deseja inserir transições: '))	
+			except Exception, e:
+				print 'Ouve um erro na escolha, tente novamente'
+				time.sleep(1)
+				InserirTransicao()
+				
+		if origem == 'estadoDestino':
+			#perguntar se deseja inserir transicao para o caracter 0 ou 1
+			try:
+				repeat = raw_input('Deseja inserir transição para o caracter %d? Escolha S para sim, N para não: ' % (caracter))
+			except Exception, e:
+				print u'Ocorreu um problema, tente novamente'	
+			if (repeat == 'S') or (repeat == 's'):
+				try:
+					escolha = int(raw_input('Para o caracter %d escolha o estado de destino da transição: ' % (caracter)))
+				except Exception, e:
+					print 'Ouve um erro na escolha, tente novamente'
+					time.sleep(1)
+					InserirTransicao()			
+				
 		try:
 			estado = estados[escolha]				
 		except Exception, e:
@@ -152,15 +167,32 @@ def InserirTransicao():
 				cls()				
 				break
 			time.sleep(1)
+		
 		if estado is not None:
 			break
+	
+	return estado
+
+def InserirTransicao():
+	#seleciona estado
+	estado = EscolheEstado('inserirTransicao', None)
     #se tem estado pedir para escolher o estado de destino de acordo com o alfabeto
 	if estado is not None:
 		#escolhe estado de destino para o alfabeto
 		print 'Estado foi escolhido: ' + estado.nome
-		for x in range(0,2):
-			print "Para o caracter %d escolha o estado de destino da transição" % (x)
-		
+		for x in range(0,2):			
+			estado_destino = EscolheEstado('estadoDestino', x)
+			if estado_destino is not None:
+				if x == 0:
+					print estado
+					print estado_destino
+					estado.alfa_zero(estado_destino)
+				if x == 1:
+					print estado
+					print estado_destino
+					estado.alfa_um(estado_destino)
+				print 'Transições inseridas com sucesso!'
+				
 		raw_input('Pressione enter para continuar....')
 	
 cls()
@@ -172,26 +204,25 @@ while True:
 	elif opcao == 2:
 		''' Transicoes '''
 		cls()
-		InserirTransicao()
+		if len(estados) > 0:
+			InserirTransicao()
+		else:
+			print 'Por favor, cadastre os estados primeiro...'
+			time.sleep(1)
 	elif opcao == 3:
 		print ''' Apagar algo '''		
 	elif opcao == 4:
 		'''Exibir automato'''
 		cls()
-		# print(Fore.RED + 'some red text')
-		# print(Back.GREEN + 'and with a green background')
-		# print(Style.DIM + 'and in dim text')
-		# print(Fore.RESET + Back.RESET + Style.RESET_ALL)
-		# print('back to normal now')		
-		#print(Fore.RESET + Back.RESET + Style.RESET_ALL)		
-		#print(Fore.BLACK + Back.YELLOW + 'Testando com o fundo amarelo')
-		#print(Fore.RESET + Back.RESET + Style.RESET_ALL)
-		print '         AFND          '
-		print ''
-		print '      |   0   |   1   |'
-		print '-----------------------'
-		for e in estados:
-			DesenhaEstado(e.nome)
+		if len(estados) > 0:
+			print '         AFND          '
+			print ''
+			print '      |   0   |   1   |'
+			print '-----------------------'
+			for e in estados:
+				DesenhaEstado(e.nome)			
+		else:
+			print 'Nenhum estado cadastrado'
 		raw_input('Pressione enter para continuar....')
 		cls()
 	elif opcao == 5:
