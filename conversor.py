@@ -145,16 +145,11 @@ def EscolheEstado(origem, caracter):
 		if origem == 'estadoDestino':
 			#perguntar se deseja inserir transicao para o caracter 0 ou 1
 			try:
-				repeat = raw_input('Deseja inserir transição para o caracter %d? Escolha S para sim, N para não: ' % (caracter))
+				escolha = int(raw_input('Para o caracter %d escolha o estado de destino da transição: ' % (caracter)))
 			except Exception, e:
-				print u'Ocorreu um problema, tente novamente'	
-			if (repeat == 'S') or (repeat == 's'):
-				try:
-					escolha = int(raw_input('Para o caracter %d escolha o estado de destino da transição: ' % (caracter)))
-				except Exception, e:
-					print 'Ouve um erro na escolha, tente novamente'
-					time.sleep(1)
-					InserirTransicao()			
+				print 'Ouve um erro na escolha, tente novamente'
+				time.sleep(1)
+				InserirTransicao()			
 				
 		try:
 			estado = estados[escolha]				
@@ -180,18 +175,27 @@ def InserirTransicao():
 	if estado is not None:
 		#escolhe estado de destino para o alfabeto
 		print 'Estado foi escolhido: ' + estado.nome
-		for x in range(0,2):			
-			estado_destino = EscolheEstado('estadoDestino', x)
-			if estado_destino is not None:
-				if x == 0:
-					print estado
-					print estado_destino
-					estado.alfa_zero(estado_destino)
-				if x == 1:
-					print estado
-					print estado_destino
-					estado.alfa_um(estado_destino)
-				print 'Transições inseridas com sucesso!'
+		for x in range(0,2):
+			try:
+				repeat = raw_input('Deseja inserir transição para o caracter %d? Escolha S para sim, N para não: ' % (x))
+			except Exception, e:
+				print u'Ocorreu um problema, tente novamente pq tem exption?'
+				x = x - 1
+			
+					
+			if (repeat == 'S') or (repeat == 's'):
+				
+				estado_destino = EscolheEstado('estadoDestino', x)
+				if estado_destino is not None:
+					if x == 0:
+						print estado
+						print estado_destino
+						estado.alfa_zero(estado_destino)
+					if x == 1:
+						print estado
+						print estado_destino
+						estado.alfa_um(estado_destino)
+					print 'Transições inseridas com sucesso!'
 				
 		raw_input('Pressione enter para continuar....')
 	
