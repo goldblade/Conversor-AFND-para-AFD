@@ -2,7 +2,10 @@
 #! /bin/env python
 import os
 import time
+import itertools
+from itertools import product, permutations
 #from colorama import Fore, Back, Style, init
+#http://www.htmlstaff.org/ver.php?id=26987
 
 #init(autoreset=True)
 
@@ -15,6 +18,7 @@ class Estado:
 		self.nome = nome
 		self.zero = []
 		self.um = []
+		self.anfd_uniao = []
 	
 	def alfa_zero(self, Estado):		
 		self.zero.append(Estado)
@@ -27,6 +31,9 @@ class Estado:
 
 	def final(self, status):
 		self.final = status
+
+	def afnd(self, Estado):
+		self.afnd_uniao.append(Estado)
 
 def Opcoes():
 	print '-------------- MENU --------------'	
@@ -45,6 +52,7 @@ def Opcoes():
 		print u'Opção Inválida'
 
 estados = []
+afd = []
 inicial = False
 
 def NovoEstado():
@@ -114,9 +122,33 @@ def NovoEstado():
 		time.sleep(1)
 		cls()
 
-def DesenhaEstado(nome):	
+def DesenhaEstado(estado):	
 	#print "%3s"  % (nome) + "%3s" % ('|')
-	print "%s|%s" % (str(nome).rjust(6), nome)
+	''' monta a string com os estados para o caracter 0 '''
+	zero = '{'
+	i = 0
+	for ez in estado.zero:
+		if i == 0:
+			zero = zero + ez.nome
+		else:
+			zero = zero + ',' + ez.nome
+		i = i + 1
+	zero = zero + '}'
+	um = '{'
+	''' monta a string com os estados para o caracter 1 '''
+	i = 0
+	for eu in estado.um:
+		if i == 0:
+			um = um + eu.nome
+		else:
+			um = um + ',' + eu.nome
+		i = i + 1
+	um = um + '}'	
+	if estado.inicial is True:
+		nome_estado = '->' + estado.nome
+	if estado.final is True:
+		nome_estado = '*' + estado.nome
+	print "%s|%s|%s" % (str(nome_estado).rjust(6), str(zero).rjust(6), str(um).rjust(6))
 	#print '{0} | {1}'.format(nome, nome)
 	#print "%3d\n%3d" % (50, 150)
 	
@@ -198,7 +230,54 @@ def InserirTransicao():
 					print 'Transições inseridas com sucesso!'
 				
 		raw_input('Pressione enter para continuar....')
+
+
+''' 
+TESTE DE MESA PARA ALGORITMO DE CONVERSAO 
+
+comeco pelo o estado inicial, processo os estados que tem em 0 e depois em 1
+
+se tiver mais de um estado em 0 ou 1, a uniao desses estados vira um novo estado, verifica-se se o estado ja existe na 
+lista de de afd se nao existir adciona ele
+
+eliminar estados sem alcance a partir do estado inicial
+'''
+
+'''
+
+- procura estado inicial na lista de afn
+- verifica se tem estados vazio na lista de um e zero, se encontrar vazio tem que eliminar o estado e achar o inicial de acordo com o apontamento da transicao
+- verificar se para o caracter zero tenho mais de 1 estado possivel, caso nao tenha, verificar se o estado já existe na lista de afd
+
+
+
+
+'''
+
+def Converter():	
+	''' criar todas as combinacoes de estados AFN '''
+	transicao = []	
+	'''for e in estados:
+		transicao.append(e)
+		for e2 in estados:
+			if e != e2:
+				nome = e.nome + ',' + e2.nome
+				estado = Estado(nome)
+				transicao.append(estado)'''
+	for i in range(0, len(estados)+1):
+		for subset in permutations(estados, i):
+			transicao.append(subset)
 	
+	#lista = ['a', 'b', 'c']
+	#for e in lista:
+	#	transicao.append(e)
+	#	for e2 in lista:
+	##			''' juntar nome dos estados '''
+	#			estado = Estado(nome)				
+	#			transicao.append(estado)	
+	for e in list(transicao):
+		print e.nome
+
 cls()
 while True:
 	opcao = Opcoes()
@@ -224,14 +303,14 @@ while True:
 			print '      |   0   |   1   |'
 			print '-----------------------'
 			for e in estados:
-				DesenhaEstado(e.nome)			
+				DesenhaEstado(e)			
 		else:
 			print 'Nenhum estado cadastrado'
 		raw_input('Pressione enter para continuar....')
 		cls()
 	elif opcao == 5:
 		''' Converter para AFD '''
-		print 'convertendo....'
+		Converter()
 	elif opcao == 6:
 		print 'Saindo do programa....'
 		break
