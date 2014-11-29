@@ -19,12 +19,18 @@ class Estado:
 		self.zero = []
 		self.um = []
 		self.anfd_uniao = []
-	
+		
 	def alfa_zero(self, Estado):		
 		self.zero.append(Estado)
-
+	
+	def alfa_zero_lista(self, listaDeEstados):
+		self.zero = listaDeEstados
+	
 	def alfa_um(self, Estado):
 		self.um.append(Estado)
+
+	def alfa_um_lista(self, listaDeEstados):		
+		self.um = listaDeEstados
 
 	def inicial(self, status):
 		self.inicial = status		
@@ -32,8 +38,8 @@ class Estado:
 	def final(self, status):
 		self.final = status
 
-	def afnd(self, Estado):
-		self.afnd_uniao.append(Estado)
+	def afnd(self, listaDeEstados):
+		self.afnd_uniao = listaDeEstados	
 
 def Opcoes():
 	print '-------------- MENU --------------'	
@@ -144,6 +150,7 @@ def DesenhaEstado(estado):
 			um = um + ',' + eu.nome
 		i = i + 1
 	um = um + '}'	
+	nome_estado = estado.nome
 	if estado.inicial is True:
 		nome_estado = '->' + estado.nome
 	if estado.final is True:
@@ -253,30 +260,124 @@ eliminar estados sem alcance a partir do estado inicial
 
 
 '''
+def criaEstado(listaDeEstados):
+	lista_zero = []
+	lista_um = []	
+	nome = ""
+	afnd_uniao = []
+	final = False
+	i = 0
+	for estado in listaDeEstados:				
+		if i == 0:			
+			nome = nome + estado.nome
+		else:			
+			nome = nome + "" + estado.nome						
+		afnd_uniao.append(estado)
+		i = i + 1		
+		'''		
+		for j in range(0, len(estado.zero)):			
+			if estado.zero[j] not in lista_zero:
+				lista_zero.append(estado.zero[j])
+		for j in range(0, len(estado.um)):			
+			if estado.um[j] not in lista_um:
+				lista_um.append(estado.um[j])
+		'''
+
+		'''
+		if len(estado.zero) > 0:
+			for i in range(0, len(estado.zero)):
+				zero.append(estado.zero[i])
+		if len(estado.um) > 0:
+			for j in range(0, len(estado.um)):
+				print j
+				um.append(estado.um[j])
+		afnd_uniao.append(estado)'''
+
+	estadoNovo = Estado(nome)
+	#set(lista_zero)
+	#set(lista_um)		
+	#estadoNovo.alfa_zero_lista(lista_zero)	
+	#estadoNovo.alfa_um_lista(lista_um)
+	#estado.final(True)	
+	estadoNovo.afnd(afnd_uniao)	
+	for e in estadoNovo.afnd_uniao:		
+		if e.final is True:
+			estadoNovo.final(True)					
+	return estadoNovo
+
+'''
+def estadoExiste(transicao, estado):
+	if
+
+	for referencia in listaDeEstados:
+		zero.append(transicao[referencia].zero)
+		um.append(transicao[referencia].um)
+	
+	for estado in transicao:
+		if(estado.zero == zero and estado.um == um):
+			return True
+	
+	return False
+
+
+[0]q0 - 0[1, 2] / 1[]
+[1]q1
+[2]q2
+'''
+
+def juntaEstado(lista):	
+	temp = lista
+	for e in lista:
+		try:
+			#print e.nome + ' tem estados unidos ' + str(e.afnd_uniao)
+			''' processar alfa zero '''
+			''' processar alfa um '''
+			for e2 in e.afnd_uniao:
+				for e2_z in e2.zero:
+					e.alfa_zero(e2_z)				
+				for e2_u in e2.um:
+					e.alfa_um(e2_u)
+				#e.alfa_zero(e2)
+				#e.alfa_um(e2)			
+				pass
+		except Exception, e:
+			pass	
+	return temp
 
 def Converter():	
-	''' criar todas as combinacoes de estados AFN '''
-	transicao = []	
-	'''for e in estados:
-		transicao.append(e)
-		for e2 in estados:
-			if e != e2:
-				nome = e.nome + ',' + e2.nome
-				estado = Estado(nome)
-				transicao.append(estado)'''
-	for i in range(0, len(estados)+1):
-		for subset in permutations(estados, i):
-			transicao.append(subset)
+	transicao = estados
+	for estado in transicao:				
+		if len(estado.zero) > 1:	
+			novoEstado = criaEstado(estado.zero)							
+			if novoEstado is not False:					
+				teste = novoEstado in transicao				
+				if teste:
+					print 'ja existe o estado'
+				else:
+					print 'nao tem o estado'
+					estado.alfa_zero_lista([novoEstado])
+					transicao.append(novoEstado)
+					
+					
+		if len(estado.um) > 1:
+			novoEstado = criaEstado(estado.um)
+			if novoEstado is not False:								
+				teste = novoEstado in transicao				
+				if teste:
+					pass
+					#print 'ja existe o estado para um'
+				else:
+					#print 'nao tem o estado'
+					estado.alfa_um_lista([novoEstado])
+					transicao.append(novoEstado)
+
+	teste = juntaEstado(transicao)
+	#print teste
+	for estado in teste:
+		DesenhaEstado(estado)
+
+
 	
-	#lista = ['a', 'b', 'c']
-	#for e in lista:
-	#	transicao.append(e)
-	#	for e2 in lista:
-	##			''' juntar nome dos estados '''
-	#			estado = Estado(nome)				
-	#			transicao.append(estado)	
-	for e in list(transicao):
-		print e.nome
 
 cls()
 while True:
@@ -309,7 +410,22 @@ while True:
 		raw_input('Pressione enter para continuar....')
 		cls()
 	elif opcao == 5:
+		estado0 = Estado("q0")
+		estado1 = Estado("q1")
+		estado2 = Estado("q2")
+		estado0.inicial(True)
+		estado0.alfa_zero_lista([estado0])
+		estado0.alfa_um_lista([estado0, estado1])
+		estado1.alfa_zero_lista([])
+		estado1.alfa_um_lista([estado2])
+		estado2.alfa_zero_lista([estado2])
+		estado2.alfa_um_lista([estado2])
+		estado2.final(True)
+		estados.append(estado0)
+		estados.append(estado1)
+		estados.append(estado2)
 		''' Converter para AFD '''
+		cls()
 		Converter()
 	elif opcao == 6:
 		print 'Saindo do programa....'
