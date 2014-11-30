@@ -327,11 +327,11 @@ def estadoExiste(transicao, estado):
 
 def juntaEstado(lista):	
 	temp = lista
-	for e in lista:
+	for e in lista:				
 		try:
 			#print e.nome + ' tem estados unidos ' + str(e.afnd_uniao)
 			''' processar alfa zero '''
-			''' processar alfa um '''
+			''' processar alfa um '''			
 			for e2 in e.afnd_uniao:
 				for e2_z in e2.zero:
 					e.alfa_zero(e2_z)				
@@ -361,11 +361,30 @@ def combinaEstados(lista):
 		for x in range(len(lista)):			
 			if e != lista[x]:
 				nome = e.nome + str(lista[x].nome)
-				contrario = str(lista[x].nome) + e.nome
-				print nome + " === " + contrario
+				contrario = str(lista[x].nome) + e.nome				
 				estado = Estado(nome)		
 				verify = verificaExistencia(teste, nome, contrario)
-				#verifycontrario = verificaExistencia(lista, contrario)				
+				#verifycontrario = verificaExistencia(lista, contrario)	
+				afnd_uniao = []
+				
+				if len(e.zero) > 1:
+					for e2 in e.zero:						
+						afnd_uniao.append(e2)
+				
+				if len(lista[x].zero) > 1:
+					for e2 in lista[x].zero:
+						afnd_uniao.append(e2)
+
+				if len(e.um) > 1:
+					for e2 in e.um:						
+						afnd_uniao.append(e2)
+
+				if len(lista[x].um) > 1:
+					for e2 in lista[x].um:
+						afnd_uniao.append(e2)
+
+				if len(afnd_uniao) > 0:
+					estado.afnd(afnd_uniao)
 				if not verify:
 					teste.append(estado)
 				#nome = e + estados[x]
@@ -378,6 +397,7 @@ def combinaEstados(lista):
 	teste = lista + teste	
 	estadofinal = Estado(nomeestadofinal)
 	teste.append(estadofinal)
+	#teste = juntaEstado(teste)
 	for t in teste:
 		DesenhaEstado(t)
 
