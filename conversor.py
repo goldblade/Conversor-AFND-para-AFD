@@ -397,10 +397,12 @@ def combinaEstados():
 					if es.nome == nomeseparado[i]:
 						if len(es.zero) > 0:
 							for ezero in es.zero:
-								e.alfa_zero(ezero)
+								if ezero not in e.zero:
+									e.alfa_zero(ezero)
 						if len(es.um) > 0:
 							for ezum in es.um:
-								e.alfa_um(ezum)
+								if ezum not in e.um:
+									e.alfa_um(ezum)
 						#print 'achou a bagaca: ' + e.nome
 						#print nomeseparado[i]
 
