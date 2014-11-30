@@ -3,7 +3,7 @@
 import os
 import time
 import itertools
-from itertools import product, permutations
+from itertools import product, permutations, combinations, combinations_with_replacement
 #from colorama import Fore, Back, Style, init
 #http://www.htmlstaff.org/ver.php?id=26987
 
@@ -341,22 +341,71 @@ def juntaEstado(lista):
 				#e.alfa_um(e2)			
 				pass
 		except Exception, e:
-			pass	
+			pass		
 	return temp
+
+def verificaExistencia(lista, nome, nomecontrario):
+	for x in lista:		
+		if nome == x.nome:
+			return True
+		if nomecontrario == x.nome:
+			return True
+	return False
+
+def combinaEstados(lista):	
+	teste = []
+	#print lista[1].nome
+	nomeestadofinal = ""
+	for e in lista:	
+		nome = ""
+		for x in range(len(lista)):			
+			if e != lista[x]:
+				nome = e.nome + str(lista[x].nome)
+				contrario = str(lista[x].nome) + e.nome
+				print nome + " === " + contrario
+				estado = Estado(nome)		
+				verify = verificaExistencia(teste, nome, contrario)
+				#verifycontrario = verificaExistencia(lista, contrario)				
+				if not verify:
+					teste.append(estado)
+				#nome = e + estados[x]
+				#contrario = estados[x] + e			
+				#if (nome not in teste) and (contrario not in teste):
+				#	teste.append(nome)
+		nomeestadofinal = nomeestadofinal + e.nome
+
+	
+	teste = lista + teste	
+	estadofinal = Estado(nomeestadofinal)
+	teste.append(estadofinal)
+	for t in teste:
+		DesenhaEstado(t)
+
+	#for s in xrange(len(lista)+1):
+	#	teste = combinations_with_replacement(lista, s)
+	#return list(teste)
+	#for x in list(teste):
+	#	for j in x:
+	#		print j.nome
+
+
 
 def Converter():	
 	transicao = estados
+
 	for estado in transicao:				
 		if len(estado.zero) > 1:	
 			novoEstado = criaEstado(estado.zero)							
 			if novoEstado is not False:					
 				teste = novoEstado in transicao				
 				if teste:
-					print 'ja existe o estado'
+					#print 'ja existe o estado'
+					pass
 				else:
-					print 'nao tem o estado'
+					#print 'nao tem o estado'
 					estado.alfa_zero_lista([novoEstado])
-					transicao.append(novoEstado)
+					transicao.append(novoEstado)					
+					
 					
 					
 		if len(estado.um) > 1:
@@ -369,9 +418,11 @@ def Converter():
 				else:
 					#print 'nao tem o estado'
 					estado.alfa_um_lista([novoEstado])
-					transicao.append(novoEstado)
+					transicao.append(novoEstado)					
+					
 
 	teste = juntaEstado(transicao)
+
 	#print teste
 	for estado in teste:
 		DesenhaEstado(estado)
@@ -425,8 +476,9 @@ while True:
 		estados.append(estado1)
 		estados.append(estado2)
 		''' Converter para AFD '''
-		cls()
-		Converter()
+		cls()		
+		combinaEstados(estados)
+		#Converter()
 	elif opcao == 6:
 		print 'Saindo do programa....'
 		break
