@@ -354,65 +354,62 @@ def verificaExistencia(lista, nome, nomecontrario):
 
 
 listaglobal = []
-def combinaRecurEstado(qtd, lista):	
-	
+def combinaRecurEstado(qtd, lista):
+	global listaglobal
 	if qtd <= 1:
-
-		print lista + listaglobal
+		#print lista + listaglobal
+		#for l in lista:
+		#	listaglobal.append(l)
+		listaglobal = estados + listaglobal
 	else:
 		for i in combinations(lista, qtd):
-			listaglobal.append(i)
+			e = Estado(i)
+			listaglobal.append(e)
 			#print i
 		combinaRecurEstado(qtd-1, lista)
-		
 
-def combinaEstados(lista):	
-	teste = []
+
+'''
+def criarEstados():
+	for j in listaglobal:
+		print j.nome
+
+	teste = list(j.nome)
+		for x in range(0, len(teste)):
+			print teste[x]
+		print teste[1]'''
+
+
+
+def combinaEstados():
+	lista = listaglobal
 	#print lista[1].nome
-	nomeestadofinal = ""	
-	for e in lista:	
-		nome = ""
-		for x in range(len(lista)):			
-			if e != lista[x]:
-				nome = e.nome + str(lista[x].nome)
-				contrario = str(lista[x].nome) + e.nome				
-				estado = Estado(nome)		
-				verify = verificaExistencia(teste, nome, contrario)
-				#verifycontrario = verificaExistencia(lista, contrario)	
-				afnd_uniao = []
-				
-				if len(e.zero) > 1:
-					for e2 in e.zero:						
-						afnd_uniao.append(e2)
-				
-				if len(lista[x].zero) > 1:
-					for e2 in lista[x].zero:
-						afnd_uniao.append(e2)
 
-				if len(e.um) > 1:
-					for e2 in e.um:						
-						afnd_uniao.append(e2)
+	for e in lista:
+		''' detectar tupla '''
+		#print type(e.nome)
+		if type(e.nome) is tuple:
+			''' separar nomes e procurar referencia para zero e um nos estados afn '''
+			nomeseparado = list(e.nome)
+			#print len(nomeseparado)
+			for i in range(len(nomeseparado)):
+				for es in estados:
+					if es.nome == nomeseparado[i]:
+						if len(es.zero) > 0:
+							for ezero in es.zero:
+								e.alfa_zero(ezero)
+						if len(es.um) > 0:
+							for ezum in es.um:
+								e.alfa_um(ezum)
+						#print 'achou a bagaca: ' + e.nome
+						#print nomeseparado[i]
 
-				if len(lista[x].um) > 1:
-					for e2 in lista[x].um:
-						afnd_uniao.append(e2)
 
-				if len(afnd_uniao) > 0:
-					estado.afnd(afnd_uniao)
-				if not verify:
-					teste.append(estado)
-				#nome = e + estados[x]
-				#contrario = estados[x] + e			
-				#if (nome not in teste) and (contrario not in teste):
-				#	teste.append(nome)
-		nomeestadofinal = nomeestadofinal + e.nome
 
-	
-	teste = lista + teste	
-	estadofinal = Estado(nomeestadofinal)
-	teste.append(estadofinal)
+
+
 	#teste = juntaEstado(teste)
-	for t in teste:
+	for t in lista:
 		DesenhaEstado(t)
 
 	#for s in xrange(len(lista)+1):
@@ -512,7 +509,7 @@ while True:
 		estados.append(estado0)
 		estados.append(estado1)
 		estados.append(estado2)
-		estados.append(estado3)
+		#estados.append(estado3)
 		''' Converter para AFD '''
 		cls()		
 		#print list(combinations(estados, len(estados)))
@@ -538,7 +535,8 @@ while True:
 		print listafull
 		'''
 		combinaRecurEstado(len(estados), listanome)
-		#combinaEstados(estados)
+		#criarEstados()
+		combinaEstados()
 		#Converter()
 	elif opcao == 6:
 		print 'Saindo do programa....'
