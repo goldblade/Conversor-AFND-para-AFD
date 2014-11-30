@@ -152,9 +152,9 @@ def DesenhaEstado(estado):
 	um = um + '}'	
 	nome_estado = estado.nome
 	if estado.inicial is True:
-		nome_estado = '->' + estado.nome
+		nome_estado = '->' + str(estado.nome)
 	if estado.final is True:
-		nome_estado = '*' + estado.nome
+		nome_estado = '*' + str(estado.nome)
 	print "%s|%s|%s" % (str(nome_estado).rjust(6), str(zero).rjust(6), str(um).rjust(6))
 	#print '{0} | {1}'.format(nome, nome)
 	#print "%3d\n%3d" % (50, 150)
@@ -394,7 +394,11 @@ def combinaEstados():
 			#print len(nomeseparado)
 			for i in range(len(nomeseparado)):
 				for es in estados:
+					listaafnd = []
 					if es.nome == nomeseparado[i]:
+						listaafnd.append(es)
+						if es.final is True:
+							e.final(True)
 						if len(es.zero) > 0:
 							for ezero in es.zero:
 								if ezero not in e.zero:
@@ -405,8 +409,22 @@ def combinaEstados():
 									e.alfa_um(ezum)
 						#print 'achou a bagaca: ' + e.nome
 						#print nomeseparado[i]
+					e.afnd(listaafnd)
+
+	for e in lista:
+		if (len(e.zero) == 0) or (len(e.um) == 0):
+			lista.remove(e)
+
+	flagControl = False
+	for i in range(0, len(lista)):
+		if lista[i].inicial is True:
+			flagControl = True
+		else:
+			
 
 
+	if flagControl is False:
+		'''procurar estado inicial na lista de afn, e depois procurar a proxima referencia '''
 
 
 
