@@ -2,7 +2,7 @@
 #! /bin/env python
 import os
 import time
-import itertools
+import itertools as it
 from itertools import product, permutations, combinations, combinations_with_replacement
 #from colorama import Fore, Back, Style, init
 #http://www.htmlstaff.org/ver.php?id=26987
@@ -352,10 +352,24 @@ def verificaExistencia(lista, nome, nomecontrario):
 			return True
 	return False
 
+
+listaglobal = []
+def combinaRecurEstado(qtd, lista):	
+	
+	if qtd <= 1:
+
+		print lista + listaglobal
+	else:
+		for i in combinations(lista, qtd):
+			listaglobal.append(i)
+			#print i
+		combinaRecurEstado(qtd-1, lista)
+		
+
 def combinaEstados(lista):	
 	teste = []
 	#print lista[1].nome
-	nomeestadofinal = ""
+	nomeestadofinal = ""	
 	for e in lista:	
 		nome = ""
 		for x in range(len(lista)):			
@@ -484,6 +498,7 @@ while True:
 		estado0 = Estado("q0")
 		estado1 = Estado("q1")
 		estado2 = Estado("q2")
+		estado3 = Estado("q3")
 		estado0.inicial(True)
 		estado0.alfa_zero_lista([estado0])
 		estado0.alfa_um_lista([estado0, estado1])
@@ -492,12 +507,38 @@ while True:
 		estado2.alfa_zero_lista([estado2])
 		estado2.alfa_um_lista([estado2])
 		estado2.final(True)
+		estado3.alfa_zero([estado1])
+		estado3.alfa_um([estado2])
 		estados.append(estado0)
 		estados.append(estado1)
 		estados.append(estado2)
+		estados.append(estado3)
 		''' Converter para AFD '''
 		cls()		
-		combinaEstados(estados)
+		#print list(combinations(estados, len(estados)))
+		listanome = []
+		for e in estados:
+			listanome.append(e.nome)
+		#print listanome
+		#limpando = list(product(listanome, listanome))	
+		
+		'''
+		listafull = []
+		for i in combinations(listanome, 2):
+			listafull.append(i)
+			print i
+		for i in combinations(listanome, 3):
+			listafull.append(i)
+			print i	
+		for i in combinations(listanome, 4):
+			listafull.append(i)
+			print i	
+		#limpando = listanome + limpando		
+		listafull = listanome + listafull
+		print listafull
+		'''
+		combinaRecurEstado(len(estados), listanome)
+		#combinaEstados(estados)
 		#Converter()
 	elif opcao == 6:
 		print 'Saindo do programa....'
