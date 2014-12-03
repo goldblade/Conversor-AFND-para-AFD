@@ -300,46 +300,77 @@ def combinaEstados():
 			idx = idx - 1
 			removeu = False
 
-	removeu = False
-	flagNovoAlg = True
-	while flagNovoAlg:
-		i = 0
-		flagNovoAlg = False
-		while i < len(lista):
-			temReferencia = False
-			if lista[i].inicial is not True:
-				for j in range(0, len(lista)):
-					if i != j:
-						if len(lista[j].um) > 1:
-							lista_um = []
-							for o in lista[j].um:
-								lista_um.append(o.nome)
-							tupla_um = tuple(lista_um)
-							if tupla_um == lista[i].nome:
+	listaRemover = []
+	for e in lista:
+		if e.inicial is not True:
+			for ref in lista:
+				if e != ref:
+					if len(ref.um) > 1:
+						lista_um = []
+						for o in ref.um:
+							lista_um.append(o.nome)
+						tupla_um = tuple(lista_um)
+						if tupla_um == e.nome:
+							listaRemover.append(e)
+					else:
+						if len(ref.um) > 0:
+							if e.nome == ref.um[0].nome:
+								listaRemover.append(e)
+					if len(e.zero) > 1:
+						lista_zero = []
+						for o in ref.zero:
+							lista_zero.append(o.nome)
+						tupla_zero = tuple(lista_zero)
+						if tupla_zero == e.nome:
+							listaRemover.append(e)
+					else:
+						if len(ref.zero) > 0:
+							if e.nome == ref.zero[0].nome:
+								listaRemover.append(e)
+
+	if len(listaRemover) > 0:
+		for r in listaRemover:
+			try:
+				lista.remove(r)
+			except Exception, e:
+				pass
+
+	'''removeu = False
+	i = 0
+	while i < len(lista):
+		temReferencia = False
+		if lista[i].inicial is not True:
+			for j in range(0, i):
+				if i != j:
+					if len(lista[j].um) > 1:
+						lista_um = []
+						for o in lista[j].um:
+							lista_um.append(o.nome)
+						tupla_um = tuple(lista_um)
+						if tupla_um == lista[i].nome:
+							temReferencia = True
+					else:
+						if len(lista[j].um) > 0:5
+							if lista[i].nome == lista[j].um[0].nome:
 								temReferencia = True
-						else:
-							if len(lista[j].um) > 0:
-								if lista[i].nome == lista[j].um[0].nome:
-									temReferencia = True
-						if len(lista[j].zero) > 1:
-							lista_dois = []
-							for o in lista[j].zero:
-								lista_dois.append(o.nome)
-							tupla_zero = tuple(lista_dois)
-							if tupla_zero == lista[i].nome:
+					if len(lista[j].zero) > 1:
+						lista_dois = []
+						for o in lista[j].zero:
+							lista_dois.append(o.nome)
+						tupla_zero = tuple(lista_dois)
+						if tupla_zero == lista[i].nome:
+							temReferencia = True
+					else:
+						if len(lista[j].zero) > 0:
+							if lista[i].nome == lista[j].zero[0].nome:
 								temReferencia = True
-						else:
-							if len(lista[j].zero) > 0:
-								if lista[i].nome == lista[j].zero[0].nome:
-									temReferencia = True
-				if not temReferencia:
-					lista.remove(lista[i])
-					removeu = True
-			i = i + 1
-			if removeu:
-				i = i - 1
-				removeu = False
-				flagNovoAlg = True
+			if not temReferencia:
+				lista.remove(lista[i])
+				removeu = True
+		i = i + 1
+		if removeu:
+			i = i - 1
+			removeu = False'''
 
 
 
@@ -407,49 +438,25 @@ while True:
 		raw_input('Pressione enter para continuar....')
 		cls()
 	elif opcao == 5:
-		'''
+
 		estado0 = Estado("q0")
 		estado1 = Estado("q1")
 		estado2 = Estado("q2")
 		estado3 = Estado("q3")
-
-		estado0.inicial(True)
-		estado0.alfa_zero_lista([estado0])
-		estado0.alfa_um_lista([estado0, estado1])
-
-		estado1.alfa_zero_lista([])
-		estado1.alfa_um_lista([estado2])
-
-		estado2.alfa_zero_lista([])
-		estado2.alfa_um_lista([estado3])
-
-		estado3.alfa_zero_lista([])
-		estado3.alfa_um_lista([])
-		estado3.final(True)
-
-		estados.append(estado0)
-		estados.append(estado1)
-		estados.append(estado2)
-		estados.append(estado3)
-		'''
-		estado0 = Estado("q0")
-		estado1 = Estado("q1")
-		estado2 = Estado("q2")
-
 		estado0.inicial(True)
 		estado0.alfa_zero_lista([estado0, estado1])
 		estado0.alfa_um_lista([estado0])
-
 		estado1.alfa_zero_lista([estado2])
 		estado1.alfa_um_lista([])
-
 		estado2.alfa_zero_lista([estado2])
 		estado2.alfa_um_lista([estado2])
 		estado2.final(True)
-
+		estado3.alfa_zero([estado1])
+		estado3.alfa_um([estado2])
 		estados.append(estado0)
 		estados.append(estado1)
 		estados.append(estado2)
+		#estados.append(estado3)
 
 		cls()
 
@@ -458,7 +465,7 @@ while True:
 			listanome.append(e.nome)
 		combinaRecurEstado(2, listanome)
 
-		print '         AFD          '
+		print '         AFND          '
 		print ''
 		print "%s|%s|%s" % (str("").rjust(20), str("0").rjust(20), str("1").rjust(20))
 		print '--------------------------------------------------------------'
